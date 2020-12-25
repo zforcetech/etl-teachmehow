@@ -160,4 +160,27 @@ public class Row {
     public void setColumn15(String column15) {
         this.column15 = column15;
     }
+
+    @Override
+    public String toString() {
+        return "Row{" +
+                "text='" + text + '\'' +
+                ", columns=" + columns +
+                ", column1='" + column1 + '\'' +
+                ", column2='" + column2 + '\'' +
+                ", column3='" + column3 + '\'' +
+                ", column4='" + column4 + '\'' +
+                ", column5='" + column5 + '\'' +
+                ", column6='" + column6 + '\'' +
+                ", column7='" + column7 + '\'' +
+                ", column8='" + column8 + '\'' +
+                ", column9='" + column9 + '\'' +
+                ", column10='" + column10 + '\'' +
+                ", column11='" + column11 + '\'' +
+                ", column12='" + column12 + '\'' +
+                ", column13='" + column13 + '\'' +
+                ", column14='" + column14 + '\'' +
+                ", column15='" + column15 + '\'' +
+                '}';
+    }
 }

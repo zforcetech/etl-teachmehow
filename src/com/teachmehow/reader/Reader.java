@@ -2,6 +2,7 @@ package com.teachmehow.reader;
 
 import com.teachmehow.model.File;
 import com.teachmehow.model.Row;
+import com.teachmehow.model.ZipResult;
 import org.apache.commons.io.FileUtils;
 
 import javax.imageio.ImageIO;
@@ -21,55 +22,98 @@ public class Reader {
 
     Logger LOGGER = Logger.getLogger(this.getClass().getName());
 
-
-    public void readZip() {
+    public ZipResult readZip() {
 
         try {
             ZipFile zipFile = new ZipFile("/home/lapras/Documents/test_zip1.zip");
             Enumeration<? extends ZipEntry> entries = zipFile.entries();
-
+            ZipResult zipResult = new ZipResult();
             List<File> images = new ArrayList<>();
+            List<Row> csvRows = null;
             while (entries.hasMoreElements()) {
                 ZipEntry entry = entries.nextElement();
-                if (entry.getName().contains(".png") || entry.getName().contains(".jpg") ||
-                        entry.getName().contains(".jpeg")) {
+                if ((entry.getName().contains(".png") || entry.getName().contains(".jpg") ||
+                        entry.getName().contains(".jpeg")) && true) {
                     File file = readImage(zipFile, entry);
                     if (file != null)
                         images.add(file);
-                } else if (entry.getName().contains(".csv"))
-                    readCSV(zipFile, entry);
+                } else if (entry.getName().contains(".csv")) {
+                    csvRows = readCSV(zipFile, entry);
+                }
+
             }
+            if(csvRows == null)
+                return null;
+            zipResult.setImages(images);
+            zipResult.setCsvRows(csvRows);
+            return zipResult;
         } catch (Exception e) {
             LOGGER.info("Error while reading zip file : " + e.getMessage());
         }
+        return null;
     }
 
-    private void readCSV(ZipFile zipFile, ZipEntry entry) {
-        InputStream stream = zipFile.getInputStream(entry);
-        LOGGER.info(entry.getName());
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream));
-        List<Row> rows = bufferedReader.lines()
-                .map(this::prepareRow)
-                .collect(toList());
+    private List<Row> readCSV(ZipFile zipFile, ZipEntry entry) {
+        InputStream stream = null;
+        try {
+            stream = zipFile.getInputStream(entry);
+        }catch (Exception e) {
+            try {
+                stream.close();
+            }catch (Exception e1) {
+                e1.printStackTrace();
+            }
+            e.printStackTrace();
+        }
+        if(stream != null) {
+            LOGGER.info(entry.getName());
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream));
+            List<Row> rows =
+                    bufferedReader.lines()
+                    .map(this::prepareRow)
+                    .collect(toList());
+            try {
+                stream.close();
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+            return rows;
+        }
+        return null;
     }
 
     private Row prepareRow(String rowString) {
         String[] columns = rowString.split(";");
         Row row = new Row();
+        if(columns.length > 0)
         row.setColumn1(columns[0]);
+        if(columns.length > 1)
         row.setColumn2(columns[1]);
+        if(columns.length > 2)
         row.setColumn3(columns[2]);
+        if(columns.length > 3)
         row.setColumn4(columns[3]);
+        if(columns.length > 4)
         row.setColumn5(columns[4]);
+        if(columns.length > 5)
         row.setColumn6(columns[5]);
+        if(columns.length > 6)
         row.setColumn7(columns[6]);
+        if(columns.length > 7)
         row.setColumn8(columns[7]);
+        if(columns.length > 8)
         row.setColumn9(columns[8]);
+        if(columns.length > 9)
         row.setColumn10(columns[9]);
+        if(columns.length > 10)
         row.setColumn11(columns[10]);
+        if(columns.length > 11)
         row.setColumn12(columns[11]);
+        if(columns.length > 12)
         row.setColumn13(columns[12]);
+        if(columns.length > 13)
         row.setColumn14(columns[13]);
+        if(columns.length > 14)
         row.setColumn15(columns[14]);
         return row;
     }
