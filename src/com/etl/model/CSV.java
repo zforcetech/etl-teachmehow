@@ -1,4 +1,4 @@
-package com.teachmehow.model;
+package com.etl.model;
 
 public class CSV extends File {
 
