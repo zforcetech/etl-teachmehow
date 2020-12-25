@@ -6,6 +6,15 @@ public class ZipResult {
 
     private List<Row> csvRows;
     private List<File> images;
+    private String zipName;
+
+    public String getZipName() {
+        return zipName;
+    }
+
+    public void setZipName(String zipName) {
+        this.zipName = zipName;
+    }
 
     public List<Row> getCsvRows() {
         return csvRows;

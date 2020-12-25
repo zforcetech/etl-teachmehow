@@ -34,7 +34,6 @@ public class Reader {
     public ZipResult readZip(ZipFile zipFile) {
 
         try {
-
             Enumeration<? extends ZipEntry> entries = zipFile.entries();
             ZipResult zipResult = new ZipResult();
             List<File> images = new ArrayList<>();
@@ -49,7 +48,6 @@ public class Reader {
                 } else if (entry.getName().contains(".csv")) {
                     csvRows = readCSV(zipFile, entry);
                 }
-
             }
             if (csvRows == null)
                 return null;
@@ -79,6 +77,7 @@ public class Reader {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream));
             List<Row> rows =
                     bufferedReader.lines()
+                            .skip(1)
                             .map(this::prepareRow)
                             .collect(toList());
             try {
