@@ -23,10 +23,11 @@ public class Reader {
 
     public ZipResult readZip(String path) {
         try {
+            LOGGER.info("Reading zip file from : "+path);
             ZipFile zipFile = new ZipFile(path);
             return readZip(zipFile);
         } catch (Exception e) {
-            LOGGER.severe("Error while reading zip file");
+            LOGGER.severe("Error while reading zip file "+e.getMessage());
         }
         return null;
     }
@@ -34,12 +35,14 @@ public class Reader {
     public ZipResult readZip(ZipFile zipFile) {
 
         try {
+            LOGGER.info("Zip processing has started ....");
             Enumeration<? extends ZipEntry> entries = zipFile.entries();
             ZipResult zipResult = new ZipResult();
             List<File> images = new ArrayList<>();
             List<Row> csvRows = null;
             while (entries.hasMoreElements()) {
                 ZipEntry entry = entries.nextElement();
+                LOGGER.info("Processing Zip entry : "+entry.getName()+"....");
                 if (entry.getName().contains(".png") || entry.getName().contains(".jpg") ||
                         entry.getName().contains(".jpeg")) {
                     File file = readImage(zipFile, entry);
@@ -48,11 +51,13 @@ public class Reader {
                 } else if (entry.getName().contains(".csv")) {
                     csvRows = readCSV(zipFile, entry);
                 }
+                LOGGER.info("Processed Zip entry : "+entry.getName() + " successfully.");
             }
             if (csvRows == null)
                 return null;
             zipResult.setImages(images);
             zipResult.setCsvRows(csvRows);
+            LOGGER.info("Zip processing has completed successfully");
             return zipResult;
         } catch (Exception e) {
             LOGGER.info("Error while reading zip file : " + e.getMessage());
@@ -60,10 +65,10 @@ public class Reader {
         return null;
     }
 
-    private List<Row> readCSV(ZipFile zipFile, ZipEntry entry) {
+    private List<Row> readCSV(ZipFile zipFile, ZipEntry csv) {
         InputStream stream = null;
         try {
-            stream = zipFile.getInputStream(entry);
+            stream = zipFile.getInputStream(csv);
         } catch (Exception e) {
             try {
                 stream.close();
@@ -73,7 +78,7 @@ public class Reader {
             e.printStackTrace();
         }
         if (stream != null) {
-            LOGGER.info(entry.getName());
+            LOGGER.info("Processing CSV file : "+csv.getName());
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream));
             List<Row> rows =
                     bufferedReader.lines()
@@ -85,6 +90,7 @@ public class Reader {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            LOGGER.info("CSV file processed successfully");
             return rows;
         }
         return null;
