@@ -39,6 +39,7 @@ public class Reader {
             Enumeration<? extends ZipEntry> entries = zipFile.entries();
             ZipResult zipResult = new ZipResult();
             List<File> images = new ArrayList<>();
+            List<String> instructions = new ArrayList<>();
             List<Row> csvRows = null;
             while (entries.hasMoreElements()) {
                 ZipEntry entry = entries.nextElement();
@@ -50,6 +51,8 @@ public class Reader {
                         images.add(file);
                 } else if (entry.getName().contains(".csv")) {
                     csvRows = readCSV(zipFile, entry);
+                } else if (entry.getName().equalsIgnoreCase("instructions.txt")) {
+                    instructions = readInstructions(zipFile, entry);
                 }
                 LOGGER.info("Processed Zip entry : "+entry.getName() + " successfully.");
             }
@@ -57,6 +60,7 @@ public class Reader {
                 return null;
             zipResult.setImages(images);
             zipResult.setCsvRows(csvRows);
+            zipResult.setInstructions(instructions);
             LOGGER.info("Zip processing has completed successfully");
             return zipResult;
         } catch (Exception e) {
@@ -184,6 +188,36 @@ public class Reader {
                 } catch (Exception e4) {
                 }
             }
+        }
+        return null;
+    }
+
+    private List<String> readInstructions(ZipFile zipFile, ZipEntry entry) {
+        InputStream stream = null;
+        try {
+            stream = zipFile.getInputStream(entry);
+        } catch (Exception e) {
+            try {
+                stream.close();
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+            e.printStackTrace();
+        }
+        if (stream != null) {
+            LOGGER.info("Processing Instruction file : "+entry.getName());
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream));
+            List<String> instructions =
+                    bufferedReader.lines()
+                            .filter(line -> line.startsWith("#"))
+                            .collect(toList());
+            try {
+                stream.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            LOGGER.info("CSV file processed successfully");
+            return instructions;
         }
         return null;
     }

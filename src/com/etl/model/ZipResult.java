@@ -7,6 +7,7 @@ public class ZipResult {
     private List<Row> csvRows;
     private List<File> images;
     private String zipName;
+    private List<String> instructions;
 
     public String getZipName() {
         return zipName;
@@ -30,5 +31,13 @@ public class ZipResult {
 
     public void setImages(List<File> images) {
         this.images = images;
+    }
+
+    public List<String> getInstructions() {
+        return instructions;
+    }
+
+    public void setInstructions(List<String> instructions) {
+        this.instructions = instructions;
     }
 }
