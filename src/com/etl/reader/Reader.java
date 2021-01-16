@@ -209,7 +209,10 @@ public class Reader {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream));
             List<String> instructions =
                     bufferedReader.lines()
-                            .filter(line -> line.startsWith("#"))
+                            .filter(line -> line.startsWith("#") ||
+                                            line.contains("duration") ||
+                                            line.contains("weightage") ||
+                                            line.contains("deduction"))
                             .collect(toList());
             try {
                 stream.close();
